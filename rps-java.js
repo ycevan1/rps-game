@@ -1,75 +1,71 @@
-function getComputerChoice() {
+function computerChoice() {
     let randomNumber = Math.random() * 3
-    let choice = ""
-
-    if (randomNumber >= 0 && randomNumber < 1) {
-        choice = "rock"
-    } else if (randomNumber >= 1 && randomNumber < 2) {
-        choice = "paper"
+    let computerChoice = ""
+    if (0 < randomNumber && randomNumber < 1) {
+        computerChoice = "ROCK"
+    } else if (1 < randomNumber && randomNumber < 2) {
+        computerChoice = "PAPER"
     } else {
-        choice = "scissors"
+        computerChoice = "SCISSORS"
     }
-
-    return choice
+    return computerChoice
 }
 
-function getHumanChoice() {
-    let validInput = false
-    while (validInput == false) {
-        let userInput = prompt("Choose Rock Paper or Scissors").toLowerCase()
-        if (userInput == "rock" || userInput == "paper" || userInput == "scissors") {
-            return userInput
-        }
-    }
-}
+function gameRound(userHand, computerHand) {
+    let result = ""
 
-
-function playGame() {
-    function playRound(computerChoice, humanChoice) {
-        console.log(computerChoice)
-        console.log(humanChoice)
-        if (computerChoice == "rock") {
-            if (humanChoice == "paper") {
-                humanScore++
-            } else if (humanChoice == "scissors") {
-                computerScore++
-            } 
-        } else if (computerChoice == "paper") {
-            if (humanChoice == "scissors") {
-                humanScore++
-            } else if (humanChoice == "rock") {
-                computerScore++
-            }
+    if (computerHand == userHand) {
+        result = "This round was a tie!"
+    } else {
+        if (computerHand == "ROCK" && userHand == "PAPER" ||
+            computerHand == "PAPER" && userHand == "SCISSORS" ||
+            computerHand == "SCISSORS" && userHand == "ROCK"
+        ) {
+            result = "You won this round!"
+            userScore++
         } else {
-            if (humanChoice == "rock") {
-                humanScore++
-            } else if (humanChoice == "paper") {
-                computerScore++
-            }
+            result = "You lost this round"
+            computerScore++
         }
-
-        console.log(computerScore)
-        console.log(humanScore)
-    }
-    
-    let humanScore = 0
-    let computerScore = 0
-    let numPlayed = 0
- 
-    while (numPlayed < 5) {
-        let humanChoice = getHumanChoice()
-        let computerChoice = getComputerChoice()
-        playRound(computerChoice, humanChoice)
-        numPlayed++
     }
 
-    if (humanScore == computerScore) {
-        console.log("This game was a tie.")
-    } else if (humanScore > computerScore) {
-        console.log("You win! Good job!")
-    } else {
-        console.log("You lose. Better luck next time!")
-    }
+    userChoiceDisplay.textContent = "You Picked: " + userHand
+    computerChoiceDisplay.textContent = "Computer Picked: " + computerHand
+    roundWinnerDisplay.textContent = result
+    scoreDisplay.textContent = "Your Score: " + userScore + " || " + "Computer Score: " + computerScore
+
 }
 
-playGame()
+let userScore = 0
+let computerScore = 0
+
+const buttons = document.querySelectorAll(".ROCK, .PAPER, .SCISSORS")
+
+buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+        if (userScore < 5 && computerScore < 5) {
+            gameRound(e.target.textContent, computerChoice())
+        } else {
+            let winner = ""
+            if (userScore > computerScore) {
+                winner = "Congrats, you won with 5 points!"
+            } else {
+                winner = "You lost, please play again!"
+            }
+            gameResultDisplay.textContent = "Game over: " + winner
+        }
+    })
+})
+
+const gameDataContainer = document.querySelector(".gameResults")
+const scoreDisplay = document.createElement("p")
+const userChoiceDisplay = document.createElement("p")
+const computerChoiceDisplay = document.createElement("p")
+const roundWinnerDisplay = document.createElement("p")
+const gameResultDisplay = document.createElement("p")
+
+gameDataContainer.append(userChoiceDisplay)
+gameDataContainer.append(computerChoiceDisplay)
+gameDataContainer.append(roundWinnerDisplay)
+gameDataContainer.append(scoreDisplay)
+gameDataContainer.append(gameResultDisplay)
