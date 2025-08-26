@@ -11,64 +11,61 @@ function computerChoice() {
     return computerChoice
 }
 
-function userChoice() {
-    let isValid = false
-    while (isValid == false) {
-        let userInput = prompt("Please Choose Rock, Paper, or Scissors").toUpperCase()
-        if (userInput == "ROCK" || userInput == "PAPER" || userInput == "SCISSORS") {
-            console.log(userInput)
-            return userInput
-        }
-    }
-}
+function gameRound(userHand, computerHand) {
+    let result = ""
 
-
-function simulateGame() {
-    
-    function gameRound(userHand, computerHand) {
-        let result = ""
-
-        if (computerHand == userHand) {
-            result = "This round was a tie!"
-        } else {
-            if (computerHand == "ROCK" && userHand == "PAPER" ||
-                computerHand == "PAPER" && userHand == "SCISSORS" ||
-                computerHand == "SCISSORS" && userHand == "ROCK"
-            ) {
-                result = "You won this round!"
-                userScore++
-            } else {
-                result = "You lost this round"
-                computerScore++
-            }
-        }
-
-        console.log("Computer Picked: " + computerHand)
-        console.log("You Picked: " + userHand)
-        console.log(result)
-    }
-
-    let userScore = 0
-    let computerScore = 0
-
-    for (let i = 0; i < 5; i++) {
-        let userHand = userChoice()
-        let computerHand = computerChoice()
-        gameRound(userHand, computerHand)
-        console.log("-------------------------")
-    }
-
-
-    console.log("Your Score: " + userScore)
-    console.log("Computer Score " + computerScore)
-
-    if (userScore > computerScore) {
-        console.log("Congrats! You Won The Game!")
-    } else if (computerScore > userChoice) {
-        console.log("You Lost The Game")
+    if (computerHand == userHand) {
+        result = "This round was a tie!"
     } else {
-        console.log("This Game Was a Tie!")
+        if (computerHand == "ROCK" && userHand == "PAPER" ||
+            computerHand == "PAPER" && userHand == "SCISSORS" ||
+            computerHand == "SCISSORS" && userHand == "ROCK"
+        ) {
+            result = "You won this round!"
+            userScore++
+        } else {
+            result = "You lost this round"
+            computerScore++
+        }
     }
+
+    userChoiceDisplay.textContent = "You Picked: " + userHand
+    computerChoiceDisplay.textContent = "Computer Picked: " + computerHand
+    roundWinnerDisplay.textContent = result
+    scoreDisplay.textContent = "Your Score: " + userScore + " || " + "Computer Score: " + computerScore
+
 }
 
-simulateGame()
+let userScore = 0
+let computerScore = 0
+
+const buttons = document.querySelectorAll(".ROCK, .PAPER, .SCISSORS")
+
+buttons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+        if (userScore < 5 && computerScore < 5) {
+            gameRound(e.target.textContent, computerChoice())
+        } else {
+            let winner = ""
+            if (userScore > computerScore) {
+                winner = "Congrats, you won with 5 points!"
+            } else {
+                winner = "You lost, please play again!"
+            }
+            gameResultDisplay.textContent = "Game over: " + winner
+        }
+    })
+})
+
+const gameDataContainer = document.querySelector(".gameResults")
+const scoreDisplay = document.createElement("p")
+const userChoiceDisplay = document.createElement("p")
+const computerChoiceDisplay = document.createElement("p")
+const roundWinnerDisplay = document.createElement("p")
+const gameResultDisplay = document.createElement("p")
+
+gameDataContainer.append(userChoiceDisplay)
+gameDataContainer.append(computerChoiceDisplay)
+gameDataContainer.append(roundWinnerDisplay)
+gameDataContainer.append(scoreDisplay)
+gameDataContainer.append(gameResultDisplay)
